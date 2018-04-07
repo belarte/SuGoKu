@@ -6,6 +6,18 @@ import (
 	"github.com/belarte/SuGoKu/sudoku"
 )
 
+func newTestGrid() sudoku.Grid {
+	return sudoku.NewGrid("000007000" +
+		"000040007" +
+		"050000000" +
+		"100020040" +
+		"003090000" +
+		"609007000" +
+		"000000000" +
+		"006000080" +
+		"700000000")
+}
+
 func TestGridGetRowNeighbours(t *testing.T) {
 	var grid sudoku.Grid
 
@@ -169,6 +181,33 @@ func TestGridGetNeighbours(t *testing.T) {
 		val := grid.GetNeighbours(entry.in)
 		if !sudoku.EqualCoords(val, entry.expected) {
 			t.Errorf("\nexpected %s\nbut got  %s", entry.expected, val)
+		}
+	}
+}
+
+func TestGridGetNeighboursValues(t *testing.T) {
+	grid := newTestGrid()
+
+	var entries = []struct {
+		in       sudoku.Coord
+		expected []int
+	}{
+		{sudoku.Coord{2, 3}, []int{}},
+		{sudoku.Coord{4, 7}, []int{}},
+		{sudoku.Coord{5, 5}, []int{2, 3, 4, 7}},
+		{sudoku.Coord{2, 2}, []int{4, 5, 7}},
+		{sudoku.Coord{8, 7}, []int{4, 8}},
+		{sudoku.Coord{4, 2}, []int{4, 7}},
+		{sudoku.Coord{1, 8}, []int{1, 6, 7, 8}},
+		{sudoku.Coord{7, 1}, []int{7}},
+		{sudoku.Coord{2, 4}, []int{1, 2, 3, 4, 5, 6, 9}},
+		{sudoku.Coord{9, 9}, []int{7, 8}},
+	}
+
+	for _, entry := range entries {
+		val := grid.GetNeighboursValue(entry.in)
+		if !sudoku.EqualValues(val, entry.expected) {
+			t.Errorf("\nentry %s\nexpected %v\nbut got  %v", entry.in, entry.expected, val)
 		}
 	}
 }

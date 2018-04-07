@@ -51,3 +51,27 @@ func EqualCoords(left, right Coords) bool {
 
 	return true
 }
+
+type Values []int
+
+func EqualValues(left, right Values) bool {
+	if left == nil && right == nil {
+		return true
+	}
+
+	if left == nil || right == nil {
+		return false
+	}
+
+	if len(left) != len(right) {
+		return false
+	}
+
+	for i := range left {
+		if left[i] != right[i] {
+			return false
+		}
+	}
+
+	return true
+}
