@@ -110,10 +110,10 @@ func (grid *Grid) GetNeighbours(c Coord) Coords {
 	return result
 }
 
-func (grid *Grid) GetNeighboursValue(c Coord) Values {
+func (grid *Grid) GetNeighboursValuesAsMap(c Coord) map[int]bool {
 	neighbours := grid.GetNeighbours(c)
-
 	values := map[int]bool{}
+
 	for _, coord := range neighbours {
 		value := grid.GetValue(coord)
 		if value != 0 {
@@ -121,9 +121,28 @@ func (grid *Grid) GetNeighboursValue(c Coord) Values {
 		}
 	}
 
+	return values
+}
+
+func (grid *Grid) GetNeighboursValues(c Coord) Values {
+	values := grid.GetNeighboursValuesAsMap(c)
+
 	result := make(Values, 0, 9)
 	for i := 1; i < 10; i++ {
 		if values[i] {
+			result = append(result, i)
+		}
+	}
+
+	return result
+}
+
+func (grid *Grid) GetPossibleValues(c Coord) Values {
+	values := grid.GetNeighboursValuesAsMap(c)
+
+	result := make(Values, 0, 9)
+	for i := 1; i < 10; i++ {
+		if grid.GetValue(c) == 0 && values[i] == false {
 			result = append(result, i)
 		}
 	}

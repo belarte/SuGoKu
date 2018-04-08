@@ -205,7 +205,34 @@ func TestGridGetNeighboursValues(t *testing.T) {
 	}
 
 	for _, entry := range entries {
-		val := grid.GetNeighboursValue(entry.in)
+		val := grid.GetNeighboursValues(entry.in)
+		if !sudoku.EqualValues(val, entry.expected) {
+			t.Errorf("\nentry %s\nexpected %v\nbut got  %v", entry.in, entry.expected, val)
+		}
+	}
+}
+
+func TestGridGetPossibleValues(t *testing.T) {
+	grid := newTestGrid()
+
+	var entries = []struct {
+		in       sudoku.Coord
+		expected []int
+	}{
+		{sudoku.Coord{2, 3}, []int{}},
+		{sudoku.Coord{4, 7}, []int{1, 2, 3, 4, 5, 6, 7, 8, 9}},
+		{sudoku.Coord{5, 5}, []int{}},
+		{sudoku.Coord{2, 2}, []int{1, 2, 3, 6, 8, 9}},
+		{sudoku.Coord{8, 7}, []int{1, 2, 3, 5, 6, 7, 9}},
+		{sudoku.Coord{4, 2}, []int{1, 2, 3, 5, 6, 8, 9}},
+		{sudoku.Coord{1, 8}, []int{2, 3, 4, 5, 9}},
+		{sudoku.Coord{7, 1}, []int{1, 2, 3, 4, 5, 6, 8, 9}},
+		{sudoku.Coord{2, 4}, []int{7, 8}},
+		{sudoku.Coord{9, 9}, []int{1, 2, 3, 4, 5, 6, 9}},
+	}
+
+	for _, entry := range entries {
+		val := grid.GetPossibleValues(entry.in)
 		if !sudoku.EqualValues(val, entry.expected) {
 			t.Errorf("\nentry %s\nexpected %v\nbut got  %v", entry.in, entry.expected, val)
 		}
