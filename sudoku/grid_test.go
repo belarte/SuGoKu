@@ -6,7 +6,7 @@ import (
 	"github.com/belarte/SuGoKu/sudoku"
 )
 
-func newTestGrid() sudoku.Grid {
+func newTestGrid() *sudoku.Grid {
 	return sudoku.NewGrid("000007000" +
 		"000040007" +
 		"050000000" +

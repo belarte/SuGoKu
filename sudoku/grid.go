@@ -11,7 +11,7 @@ type Grid struct {
 	cells [81]int
 }
 
-func NewGrid(str string) Grid {
+func NewGrid(str string) *Grid {
 	s := strings.Map(func(r rune) rune {
 		if unicode.IsDigit(r) {
 			return r
@@ -24,7 +24,7 @@ func NewGrid(str string) Grid {
 		grid.cells[i] = int(c - '0')
 	}
 
-	return grid
+	return &grid
 }
 
 func index(i, j int) int {
@@ -157,5 +157,5 @@ func (grid *Grid) GetNextEmptyCell(c Coord) Coord {
 		}
 	}
 
-	return c
+	return Coord{0, 0}
 }
