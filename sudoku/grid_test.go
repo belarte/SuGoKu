@@ -12,7 +12,7 @@ func newTestGrid() sudoku.Grid {
 		"050000000" +
 		"100020040" +
 		"003090000" +
-		"609007000" +
+		"609007100" +
 		"000000000" +
 		"006000080" +
 		"700000000")
@@ -199,7 +199,7 @@ func TestGridGetNeighboursValues(t *testing.T) {
 		{sudoku.Coord{8, 7}, []int{4, 8}},
 		{sudoku.Coord{4, 2}, []int{4, 7}},
 		{sudoku.Coord{1, 8}, []int{1, 6, 7, 8}},
-		{sudoku.Coord{7, 1}, []int{7}},
+		{sudoku.Coord{7, 1}, []int{1, 7}},
 		{sudoku.Coord{2, 4}, []int{1, 2, 3, 4, 5, 6, 9}},
 		{sudoku.Coord{9, 9}, []int{7, 8}},
 	}
@@ -226,7 +226,7 @@ func TestGridGetPossibleValues(t *testing.T) {
 		{sudoku.Coord{8, 7}, []int{1, 2, 3, 5, 6, 7, 9}},
 		{sudoku.Coord{4, 2}, []int{1, 2, 3, 5, 6, 8, 9}},
 		{sudoku.Coord{1, 8}, []int{2, 3, 4, 5, 9}},
-		{sudoku.Coord{7, 1}, []int{1, 2, 3, 4, 5, 6, 8, 9}},
+		{sudoku.Coord{7, 1}, []int{2, 3, 4, 5, 6, 8, 9}},
 		{sudoku.Coord{2, 4}, []int{7, 8}},
 		{sudoku.Coord{9, 9}, []int{1, 2, 3, 4, 5, 6, 9}},
 	}
@@ -235,6 +235,33 @@ func TestGridGetPossibleValues(t *testing.T) {
 		val := grid.GetPossibleValues(entry.in)
 		if !sudoku.EqualValues(val, entry.expected) {
 			t.Errorf("\nentry %s\nexpected %v\nbut got  %v", entry.in, entry.expected, val)
+		}
+	}
+}
+
+func TestGridGetNextEmptyCell(t *testing.T) {
+	grid := newTestGrid()
+
+	var entries = []struct {
+		in       sudoku.Coord
+		expected sudoku.Coord
+	}{
+		{sudoku.Coord{1, 1}, sudoku.Coord{1, 1}},
+		{sudoku.Coord{6, 1}, sudoku.Coord{7, 1}},
+		{sudoku.Coord{7, 1}, sudoku.Coord{7, 1}},
+		{sudoku.Coord{9, 2}, sudoku.Coord{1, 3}},
+		{sudoku.Coord{9, 3}, sudoku.Coord{9, 3}},
+		{sudoku.Coord{3, 4}, sudoku.Coord{3, 4}},
+		{sudoku.Coord{5, 6}, sudoku.Coord{5, 6}},
+		{sudoku.Coord{6, 6}, sudoku.Coord{8, 6}},
+		{sudoku.Coord{7, 6}, sudoku.Coord{8, 6}},
+		{sudoku.Coord{8, 6}, sudoku.Coord{8, 6}},
+	}
+
+	for _, entry := range entries {
+		val := grid.GetNextEmptyCell(entry.in)
+		if val != entry.expected {
+			t.Errorf("\nentry %s\nexpected %s\nbut got  %s", entry.in, entry.expected, val)
 		}
 	}
 }

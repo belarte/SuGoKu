@@ -149,3 +149,13 @@ func (grid *Grid) GetPossibleValues(c Coord) Values {
 
 	return result
 }
+
+func (grid *Grid) GetNextEmptyCell(c Coord) Coord {
+	for i := index(c.X-1, c.Y-1); i < 81; i++ {
+		if grid.cells[i] == 0 {
+			return Coord{i%9 + 1, i/9 + 1}
+		}
+	}
+
+	return c
+}
