@@ -13,6 +13,10 @@ func (c Coord) String() string {
 	return fmt.Sprintf("{%d, %d}", c.X, c.Y)
 }
 
+func EqualCoord(left, right Coord) bool {
+	return left.X == right.X && left.Y == right.Y
+}
+
 type Coords []Coord
 
 func (c Coords) String() string {
