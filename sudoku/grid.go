@@ -46,6 +46,10 @@ func (grid *Grid) GetValue(c Coord) int {
 	return grid.cells[index(c.X-1, c.Y-1)]
 }
 
+func (grid *Grid) SetValue(c Coord, value int) {
+	grid.cells[index(c.X-1, c.Y-1)] = value
+}
+
 func (grid *Grid) GetRowNeighbours(c Coord) Coords {
 	result := make(Coords, 0, 8)
 
