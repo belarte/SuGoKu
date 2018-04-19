@@ -12,6 +12,10 @@ type RecursiveSolver struct {
 	grid *sudoku.Grid
 }
 
+func NewRecursiveSolver() *RecursiveSolver {
+	return &RecursiveSolver{}
+}
+
 func (solve *RecursiveSolver) Solve(grid *sudoku.Grid) bool {
 	solve.grid = grid
 	firstCell := solve.grid.GetNextEmptyCell(sudoku.Coord{1, 1})
