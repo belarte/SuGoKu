@@ -58,6 +58,7 @@ func NewIterativeSolver() *IterativeSolver {
 
 func (solve *IterativeSolver) Solve(grid *sudoku.Grid) bool {
 	solve.grid = grid
+	solve.moves = Moves{}
 
 	c := sudoku.Coord{0, 1}
 	for {
@@ -89,4 +90,60 @@ func (solve *IterativeSolver) Solve(grid *sudoku.Grid) bool {
 	}
 
 	return i == len(solve.moves)
+}
+
+type RecursiveParallelSolver struct {
+	grid      *sudoku.Grid
+	semaphore chan struct{}
+}
+
+func NewRecursiveParallelSolver(numChannel int) *RecursiveParallelSolver {
+	var sem = make(chan struct{}, numChannel)
+	return &RecursiveParallelSolver{grid: &sudoku.Grid{}, semaphore: sem}
+}
+
+func (solve *RecursiveParallelSolver) Solve(grid *sudoku.Grid) bool {
+	firstCell := grid.GetNextEmptyCell(sudoku.Coord{1, 1})
+	result := make(chan bool, 1)
+	solve.solve(grid, firstCell, result)
+	res := <-result
+	*grid = *solve.grid
+	return res
+}
+
+func (solve *RecursiveParallelSolver) solve(grid *sudoku.Grid, c sudoku.Coord, output chan<- bool) {
+	if sudoku.EqualCoord(c, sudoku.Coord{0, 0}) {
+		*solve.grid = *grid
+		output <- true
+		return
+	}
+
+	possibleValues := grid.GetPossibleValues(c)
+	outputs := make(chan bool, len(possibleValues))
+
+	for _, value := range possibleValues {
+		copy := sudoku.CopyGrid(grid)
+		copy.SetValue(c, value)
+		select {
+		case solve.semaphore <- struct{}{}:
+			go func() {
+				solve.solve(copy, copy.GetNextEmptyCell(c), outputs)
+				<-solve.semaphore
+			}()
+		default:
+			solve.solve(copy, copy.GetNextEmptyCell(c), outputs)
+		}
+	}
+
+	res := false
+	for i := 0; i < len(possibleValues); i++ {
+		out := <-outputs
+		res = res || out
+	}
+
+	if res == false {
+		grid.SetValue(c, 0)
+	}
+
+	output <- res
 }
