@@ -27,6 +27,12 @@ func NewGrid(str string) *Grid {
 	return &grid
 }
 
+func CopyGrid(grid *Grid) *Grid {
+	var cells [81]int
+	copy(cells[:], grid.cells[:])
+	return &Grid{cells: cells}
+}
+
 func index(i, j int) int {
 	return i + j*9
 }
