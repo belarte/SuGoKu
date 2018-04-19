@@ -1,8 +1,9 @@
-package sudoku_test
+package solver_test
 
 import (
 	"testing"
 
+	"github.com/belarte/SuGoKu/solver"
 	"github.com/belarte/SuGoKu/sudoku"
 )
 
@@ -45,7 +46,7 @@ func TestRecursiveSolver(t *testing.T) {
 		{grid1, true, grid1Solution},
 	}
 
-	var solver sudoku.RecursiveSolver
+	var solver solver.RecursiveSolver
 	for _, entry := range entries {
 		if entry.expected != solver.Solve(entry.in) {
 			t.Errorf("\n%s\n\n%s", entry.in, entry.out)
@@ -55,14 +56,14 @@ func TestRecursiveSolver(t *testing.T) {
 
 func BenchmarkRecursiveGrid1(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		var solver sudoku.RecursiveSolver
+		var solver solver.RecursiveSolver
 		solver.Solve(grid1)
 	}
 }
 
 func BenchmarkRecursiveGrid2(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		var solver sudoku.RecursiveSolver
+		var solver solver.RecursiveSolver
 		solver.Solve(grid2)
 	}
 }
