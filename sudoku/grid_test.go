@@ -265,3 +265,31 @@ func TestGridGetNextEmptyCell(t *testing.T) {
 		}
 	}
 }
+
+func TestGridNextCell(t *testing.T) {
+	grid := newTestGrid()
+
+	var entries = []struct {
+		in       sudoku.Coord
+		expected sudoku.Coord
+	}{
+		{sudoku.Coord{1, 1}, sudoku.Coord{2, 1}},
+		{sudoku.Coord{6, 1}, sudoku.Coord{7, 1}},
+		{sudoku.Coord{7, 1}, sudoku.Coord{8, 1}},
+		{sudoku.Coord{9, 2}, sudoku.Coord{1, 3}},
+		{sudoku.Coord{9, 3}, sudoku.Coord{1, 4}},
+		{sudoku.Coord{3, 4}, sudoku.Coord{4, 4}},
+		{sudoku.Coord{5, 6}, sudoku.Coord{6, 6}},
+		{sudoku.Coord{6, 6}, sudoku.Coord{7, 6}},
+		{sudoku.Coord{7, 6}, sudoku.Coord{8, 6}},
+		{sudoku.Coord{8, 6}, sudoku.Coord{9, 6}},
+		{sudoku.Coord{9, 9}, sudoku.Coord{0, 0}},
+	}
+
+	for _, entry := range entries {
+		val := grid.GetNextCell(entry.in)
+		if val != entry.expected {
+			t.Errorf("\nentry %s\nexpected %s\nbut got  %s", entry.in, entry.expected, val)
+		}
+	}
+}

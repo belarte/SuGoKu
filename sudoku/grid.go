@@ -185,3 +185,14 @@ func (grid *Grid) GetNextEmptyCell(c Coord) Coord {
 
 	return Coord{0, 0}
 }
+
+func (grid *Grid) GetNextCell(c Coord) Coord {
+	if c.X < 9 {
+		return Coord{c.X + 1, c.Y}
+	}
+	if c.Y < 9 {
+		return Coord{1, c.Y + 1}
+	}
+
+	return Coord{0, 0}
+}
