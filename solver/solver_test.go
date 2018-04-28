@@ -43,7 +43,7 @@ func TestRecursiveSolver(t *testing.T) {
 		expected bool
 		out      *sudoku.Grid
 	}{
-		{grid1, true, grid1Solution},
+		{sudoku.CopyGrid(grid1), true, grid1Solution},
 	}
 
 	solver := solver.NewRecursiveSolver()
@@ -57,13 +57,13 @@ func TestRecursiveSolver(t *testing.T) {
 func BenchmarkRecursiveGrid1(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		solver := solver.NewRecursiveSolver()
-		solver.Solve(grid1)
+		solver.Solve(sudoku.CopyGrid(grid1))
 	}
 }
 
 func BenchmarkRecursiveGrid2(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		solver := solver.NewRecursiveSolver()
-		solver.Solve(grid2)
+		solver.Solve(sudoku.CopyGrid(grid2))
 	}
 }
