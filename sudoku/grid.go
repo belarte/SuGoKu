@@ -33,6 +33,10 @@ func CopyGrid(grid *Grid) *Grid {
 	return &Grid{cells: cells}
 }
 
+func EqualGrids(left, right *Grid) bool {
+	return EqualValues(left.cells[:], right.cells[:])
+}
+
 func index(i, j int) int {
 	return i + j*9
 }
