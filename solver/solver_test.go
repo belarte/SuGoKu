@@ -48,8 +48,25 @@ func TestRecursiveSolver(t *testing.T) {
 
 	solver := solver.NewRecursiveSolver()
 	for _, entry := range entries {
-		if entry.expected != solver.Solve(entry.in) {
+		if entry.expected != solver.Solve(entry.in) || !sudoku.EqualGrids(entry.in, entry.out) {
 			t.Errorf("\n%s\n\n%s", entry.in, entry.out)
+		}
+	}
+}
+
+func TestIterativeSolver(t *testing.T) {
+	var entries = []struct {
+		in       *sudoku.Grid
+		expected bool
+		out      *sudoku.Grid
+	}{
+		{sudoku.CopyGrid(grid1), true, grid1Solution},
+	}
+
+	solver := solver.NewIterativeSolver()
+	for _, entry := range entries {
+		if entry.expected != solver.Solve(entry.in) || !sudoku.EqualGrids(entry.in, entry.out) {
+			t.Errorf("\n%s\n\n%s\n%v", entry.in, entry.out, solver)
 		}
 	}
 }
@@ -65,5 +82,12 @@ func BenchmarkRecursiveGrid2(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		solver := solver.NewRecursiveSolver()
 		solver.Solve(sudoku.CopyGrid(grid2))
+	}
+}
+
+func BenchmarkIterativeGrid1(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		solver := solver.NewIterativeSolver()
+		solver.Solve(sudoku.CopyGrid(grid1))
 	}
 }
