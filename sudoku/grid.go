@@ -1,8 +1,7 @@
 package sudoku
 
 import (
-	"bytes"
-	"strconv"
+	"fmt"
 	"strings"
 	"unicode"
 )
@@ -41,15 +40,28 @@ func index(i, j int) int {
 	return i + j*9
 }
 
+func fmtLine(line []int) string {
+	return fmt.Sprintf("|%d%d%d|%d%d%d|%d%d%d|", line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8])
+}
+
 func (grid *Grid) String() string {
-	var buffer bytes.Buffer
-	for j := 0; j < 9; j++ {
-		for i := 0; i < 9; i++ {
-			buffer.WriteString(strconv.Itoa(grid.cells[index(i, j)]))
-		}
-		buffer.WriteString("\n")
-	}
-	return buffer.String()
+	var output string
+
+	output += "-------------\n"
+	output += fmtLine(grid.cells[0:9]) + "\n"
+	output += fmtLine(grid.cells[9:18]) + "\n"
+	output += fmtLine(grid.cells[18:27]) + "\n"
+	output += "-------------\n"
+	output += fmtLine(grid.cells[27:36]) + "\n"
+	output += fmtLine(grid.cells[36:45]) + "\n"
+	output += fmtLine(grid.cells[45:54]) + "\n"
+	output += "-------------\n"
+	output += fmtLine(grid.cells[54:63]) + "\n"
+	output += fmtLine(grid.cells[63:72]) + "\n"
+	output += fmtLine(grid.cells[72:81]) + "\n"
+	output += "-------------\n"
+
+	return output
 }
 
 func (grid *Grid) GetValue(c Coord) int {
