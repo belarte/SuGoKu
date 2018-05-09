@@ -104,18 +104,15 @@ func NewRecursiveParallelSolver(numChannel int) *RecursiveParallelSolver {
 
 func (solve *RecursiveParallelSolver) Solve(grid *sudoku.Grid) bool {
 	firstCell := grid.GetNextEmptyCell(sudoku.Coord{1, 1})
-	result := make(chan bool, 1)
-	solve.solve(grid, firstCell, result)
-	res := <-result
+	res := solve.solve(grid, firstCell)
 	*grid = *solve.grid
 	return res
 }
 
-func (solve *RecursiveParallelSolver) solve(grid *sudoku.Grid, c sudoku.Coord, output chan<- bool) {
+func (solve *RecursiveParallelSolver) solve(grid *sudoku.Grid, c sudoku.Coord) bool {
 	if sudoku.EqualCoord(c, sudoku.Coord{0, 0}) {
 		*solve.grid = *grid
-		output <- true
-		return
+		return true
 	}
 
 	possibleValues := grid.GetPossibleValues(c)
@@ -127,11 +124,11 @@ func (solve *RecursiveParallelSolver) solve(grid *sudoku.Grid, c sudoku.Coord, o
 		select {
 		case solve.semaphore <- struct{}{}:
 			go func() {
-				solve.solve(copy, copy.GetNextEmptyCell(c), outputs)
+				outputs <- solve.solve(copy, copy.GetNextEmptyCell(c))
 				<-solve.semaphore
 			}()
 		default:
-			solve.solve(copy, copy.GetNextEmptyCell(c), outputs)
+			outputs <- solve.solve(copy, copy.GetNextEmptyCell(c))
 		}
 	}
 
@@ -145,5 +142,5 @@ func (solve *RecursiveParallelSolver) solve(grid *sudoku.Grid, c sudoku.Coord, o
 		grid.SetValue(c, 0)
 	}
 
-	output <- res
+	return res
 }
